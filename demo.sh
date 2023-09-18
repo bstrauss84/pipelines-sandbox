@@ -50,7 +50,7 @@ demo.validate_tools() {
 }
 
 demo.webhook-url(){
-  local route=$(oc -n $NAMESPACE get route  -l eventlistener=vote-app -o name )
+  local route=$(oc -n $NAMESPACE get route  -l eventlistener=wildwest-app -o name )
   local url=$(oc -n $NAMESPACE get $route --template='http://{{.spec.host}}')
   info "Webook URL: $url "
 }
@@ -78,7 +78,7 @@ demo.setup-triggers() {
 
   sleep 3
   info "Expose event listener"
-  local el_svc=$(oc -n $NAMESPACE get svc -l eventlistener=vote-app -o name)
+  local el_svc=$(oc -n $NAMESPACE get svc -l eventlistener=wildwest-app -o name)
   OC expose $el_svc
 
   sleep 5
@@ -120,7 +120,7 @@ demo.run() {
   info "Running API Build and deploy"
   TKN pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=01_pipeline/03_persistent_volume_claim.yaml \
-    -p deployment-name=pipelines-vote-api \
+    -p deployment-name=pipelines-wildwest-api \
     -p git-url=https://github.com/openshift/pipelines-vote-api.git \
     -p IMAGE="image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/pipelines-vote-api" \
     --use-param-defaults \
