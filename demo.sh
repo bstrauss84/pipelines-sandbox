@@ -3,7 +3,7 @@ set -e -u -o pipefail
 
 declare -r SCRIPT_DIR=$(cd -P $(dirname $0) && pwd)
 
-declare -r NAMESPACE=${NAMESPACE:-pipelines-tutorial}
+declare -r NAMESPACE=${NAMESPACE:-wildwest}
 
 _log() {
     local level=$1; shift
@@ -117,23 +117,25 @@ demo.logs() {
 }
 
 demo.run() {
-  info "Running API Build and deploy"
+  info "Running Wildwest Build and deploy"
   TKN pipeline start build-and-deploy \
     -w name=shared-workspace,volumeClaimTemplateFile=01_pipeline/03_persistent_volume_claim.yaml \
-    -p deployment-name=pipelines-wildwest-api \
-    -p git-url=https://github.com/openshift/pipelines-vote-api.git \
-    -p IMAGE="image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/pipelines-vote-api" \
+    -p deployment-name=wildwest \
+    -p git-url=https://github.com/bstrauss84/wild-west-kubernetes.git \
+    -p IMAGE="image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/wildwest" \
     --use-param-defaults \
     --showlog=true
 
-  info "Running UI Build and deploy"
-  TKN pipeline start build-and-deploy \
-    -w name=shared-workspace,volumeClaimTemplateFile=01_pipeline/03_persistent_volume_claim.yaml \
-    -p deployment-name=pipelines-vote-ui \
-    -p git-url=https://github.com/openshift/pipelines-vote-ui.git \
-    -p IMAGE="image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/pipelines-vote-ui" \
-    --use-param-defaults \
-    --showlog=true
+# -p IMAGE="image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/pipelines-vote-api" \
+
+#  info "Running UI Build and deploy"
+#  TKN pipeline start build-and-deploy \
+#    -w name=shared-workspace,volumeClaimTemplateFile=01_pipeline/03_persistent_volume_claim.yaml \
+#    -p deployment-name=pipelines-vote-ui \
+#    -p git-url=https://github.com/openshift/pipelines-vote-ui.git \
+#    -p IMAGE="image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/pipelines-vote-ui" \
+#    --use-param-defaults \
+#    --showlog=true
 
   info "Validating the result of pipeline run"
   demo.validate_pipelinerun
@@ -161,7 +163,7 @@ demo.validate_pipelinerun() {
 
 demo.url() {
   echo "Click following URL to access the application"
-  oc -n "$NAMESPACE" get route pipelines-vote-ui --template='http://{{.spec.host}} '
+  oc -n "$NAMESPACE" get route wildwest --template='http://{{.spec.host}} '
   echo
 }
 
@@ -176,7 +178,7 @@ demo.help() {
 		  setup             runs both pipeline and trigger setup
 		  setup-pipeline    sets up project, tasks, pipeline and workspace
 		  setup-triggers    sets up  trigger, trigger-template, bindings, event-listener, expose webhook url
-		  run               starts pipeline to deploy api, ui
+		  run               starts pipeline to deploy app
 		  webhook-url       provides the webhook url, which listens to github-event payloads
 		  logs              shows logs of last pipelinerun
 		  url               provides the url of the application
