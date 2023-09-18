@@ -1,7 +1,7 @@
 apiVersion: triggers.tekton.dev/v1beta1
 kind: Trigger
 metadata:
-  name: vote-trigger
+  name: wildwest-trigger
 spec:
   serviceAccountName: pipeline
   interceptors:
@@ -15,9 +15,9 @@ spec:
         - name: "eventTypes"
           value: ["push"]
   bindings:
-    - ref: vote-app
+    - ref: wildwest-app
   template:
-    ref: vote-app
+    ref: wildwest-app
 ---
 apiVersion: v1
 kind: Secret
