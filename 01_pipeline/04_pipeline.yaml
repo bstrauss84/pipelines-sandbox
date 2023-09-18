@@ -57,7 +57,7 @@ spec:
     - name: rox_central_endpoint
       value: roxsecrets
     - name: output_format
-      value: table
+      value: csv
     - name: image_digest
       value: $(tasks.build-image.results.IMAGE_DIGEST)
     runAfter:
