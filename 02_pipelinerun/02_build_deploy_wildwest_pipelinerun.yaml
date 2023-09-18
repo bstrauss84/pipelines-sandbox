@@ -1,17 +1,17 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: build-deploy-ui-pipelinerun
+  name: build-deploy-wildwest-pipelinerun
 spec:
   pipelineRef:
     name: build-and-deploy
   params:
   - name: deployment-name
-    value: pipelines-vote-ui
+    value: wildwest
   - name: git-url
-    value: https://github.com/openshift/pipelines-vote-ui.git
+    value: https://github.com/bstrauss84/wild-west-kubernetes.git
   - name: IMAGE
-    value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/pipelines-vote-ui
+    value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/wildwest
   workspaces:
   - name: shared-workspace
     volumeClaimTemplate:
