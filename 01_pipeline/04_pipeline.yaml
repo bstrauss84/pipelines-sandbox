@@ -48,6 +48,58 @@ spec:
       workspace: shared-workspace
     runAfter:
     - fetch-repository
+  - name: image-scan
+    params:
+    - name: image
+      value: $(params.IMAGE)
+    - name: rox_api_token
+      value: roxsecrets
+    - name: rox_central_endpoint
+      value: roxsecrets
+    - name: output_format
+      value: table
+    - name: image_digest
+      value: $(tasks.build-image.results.IMAGE_DIGEST)
+    runAfter:
+    - build-image
+    taskRef:
+      kind: ClusterTask
+      name: rox-image-scan
+  - name: image-check
+    params:
+    - name: image
+      value: $(params.IMAGE)
+    - name: rox_api_token
+      value: roxsecrets
+    - name: rox_central_endpoint
+      value: roxsecrets
+    - name: image_digest
+      value: $(tasks.build-image.results.IMAGE_DIGEST)
+    runAfter:
+      - build-image
+    taskRef:
+      kind: ClusterTask
+      name: rox-image-check
+  - name: deploy-check
+    params:
+    - name: url
+      value: $(params.git-url)
+    - name: rox_api_token
+      value: roxsecrets
+    - name: rox_central_endpoint
+      value: roxsecrets
+    - name: file
+      value: deployment.yaml
+    - name: deployment_files_path
+      value: kubernetes
+    runAfter:
+    - build-image
+    taskRef:
+      kind: ClusterTask
+      name: rox-deployment-check
+    workspaces:
+    - name: source
+      workspace: shared-workspace
   - name: apply-manifests
     taskRef:
       name: apply-manifests
@@ -55,7 +107,9 @@ spec:
     - name: source
       workspace: shared-workspace
     runAfter:
-    - build-image
+    - image-check
+    - image-scan
+    - deploy-check
   - name: update-deployment
     taskRef:
       name: update-deployment
