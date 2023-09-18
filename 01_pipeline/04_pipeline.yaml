@@ -82,7 +82,7 @@ spec:
       name: rox-image-check
   - name: deploy-check
     params:
-    - name: url
+    - name: GIT_REPOSITORY
       value: $(params.git-url)
     - name: rox_api_token
       value: roxsecrets
